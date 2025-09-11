@@ -89,25 +89,11 @@
                                  </Button>
                               </children>
                            </VBox>
-                           <StackPane fx:id="errorLabelsL" prefHeight="150.0" prefWidth="200.0">
+                           <VBox prefHeight="200.0" prefWidth="100.0">
                               <children>
-                                 <Label text="Fields for password and login cannot be empty" textAlignment="CENTER" visible="false" wrapText="true">
-                                    <opaqueInsets>
-                                       <Insets />
-                                    </opaqueInsets>
-                                 </Label>
-                                 <Label text="Login credentials are incorrect" textAlignment="CENTER" visible="false" wrapText="true">
-                                    <opaqueInsets>
-                                       <Insets />
-                                    </opaqueInsets>
-                                 </Label>
-                                 <Label text="Couldn't make a connection" textAlignment="CENTER" visible="false" wrapText="true">
-                                    <opaqueInsets>
-                                       <Insets />
-                                    </opaqueInsets>
-                                 </Label>
+                                 <Label fx:id="errorLabelL" alignment="CENTER" prefHeight="109.0" prefWidth="200.0" wrapText="true" />
                               </children>
-                           </StackPane>
+                           </VBox>
                         </children>
                         <StackPane.margin>
                            <Insets />
@@ -126,57 +112,23 @@
                            <TextField fx:id="emailR" prefHeight="26.0" prefWidth="188.0" promptText="E-mail address" />
                            <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0">
                               <children>
-                                 <StackPane fx:id="errorLabelsR" prefHeight="150.0" prefWidth="200.0">
-                                    <children>
-                                       <Label text="No field can be empty" textAlignment="CENTER" visible="false" wrapText="true">
-                                          <opaqueInsets>
-                                             <Insets />
-                                          </opaqueInsets>
-                                       </Label>
-                                       <Label text="Password and confirm password not matched" textAlignment="CENTER" visible="false" wrapText="true">
-                                          <opaqueInsets>
-                                             <Insets />
-                                          </opaqueInsets>
-                                       </Label>
-                                       <Label text="Incorrect e-mail format" textAlignment="CENTER" visible="false" wrapText="true">
-                                          <opaqueInsets>
-                                             <Insets />
-                                          </opaqueInsets>
-                                       </Label>
-                                       <Label text="Password has to be at least 8 characters long with one uppercase letter." textAlignment="CENTER" visible="false" wrapText="true">
-                                          <opaqueInsets>
-                                             <Insets />
-                                          </opaqueInsets>
-                                       </Label>
-                                       <Label text="Login has to be at least 8 characters long." textAlignment="CENTER" visible="false" wrapText="true">
-                                          <opaqueInsets>
-                                             <Insets />
-                                          </opaqueInsets>
-                                       </Label>
-                                       <Label text="Couldn't make a connection." textAlignment="CENTER" visible="false" wrapText="true">
-                                          <opaqueInsets>
-                                             <Insets />
-                                          </opaqueInsets>
-                                       </Label>
-                                    </children>
-                                 </StackPane>
-                                 <Button alignment="CENTER" mnemonicParsing="false" onAction="#onReturnClick" style="-fx-background-color: #00000000;" text="Return" />
+                                 <Label fx:id="errorLabelR" alignment="TOP_CENTER" prefHeight="60.0" prefWidth="173.0" wrapText="true" />
+                                 <Button alignment="CENTER" mnemonicParsing="false" onAction="#onReturnClick" style="-fx-background-color: #00000000;" text="Return">
+                                    <font>
+                                       <Font name="System Bold" size="18.0" />
+                                    </font></Button>
                               </children>
                            </VBox>
                         </children>
                      </VBox>
                      <VBox fx:id="communicationMenu" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
                         <children>
-                           <Button mnemonicParsing="false" onAction="#onLoggingInClick" style="-fx-background-color: #00000000;" text="Continue" textFill="#212738">
+                           <Button mnemonicParsing="false" onAction="#onReturnClick" style="-fx-background-color: #00000000;" text="Continue" textFill="#212738">
                               <font>
                                  <Font name="Microsoft Tai Le" size="20.0" />
                               </font>
                            </Button>
-                           <VBox alignment="CENTER" prefHeight="123.0" prefWidth="200.0">
-                              <children>
-                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Verify your account using link sent in your e-mail inbox before loggin in." textAlignment="CENTER" wrappingWidth="159.13671875" />
-                              </children>
-                           </VBox>
+                           <Text fx:id="info" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="159.13671875" />
                         </children>
                      </VBox>
                   </children>

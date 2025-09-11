@@ -2,6 +2,7 @@ package com.example.tellem;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -13,8 +14,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
+import javafx.scene.text.Text;
 
 public class TellemController {
 
@@ -25,10 +28,10 @@ public class TellemController {
     private VBox communicationMenu;
 
     @FXML
-    private StackPane errorLabelsL;
+    private Label errorLabelL;
 
     @FXML
-    private StackPane errorLabelsR;
+    private Label errorLabelR;
 
     @FXML
     private StackPane functionalContainer;
@@ -76,6 +79,9 @@ public class TellemController {
     private String accessToken = "";
 
     @FXML
+    private Text info;
+
+    @FXML
     void exit() {
 
     }
@@ -91,6 +97,7 @@ public class TellemController {
         mainMenu.setVisible(true);
         loginMenu.setVisible(false);
         registerMenu.setVisible(false);
+        communicationMenu.setVisible(false);
         hideErrors();
 
         loginL.setText("");
@@ -106,55 +113,37 @@ public class TellemController {
     private void onLoggingInClick(){
         try {
             hideErrors();
-            if (loginL.getText().isEmpty() || passwordL.getText().isEmpty()){
-                Label err = (Label) errorLabelsL.getChildren().get(0);
-                err.setVisible(true);
-            } else if (this.refreshToken.isEmpty()) {
-                URL url = new URL("http://localhost:3000/refresh");
+            if (!(passwordL.getText().isEmpty()) && !(loginL.getText().isEmpty())){
+                String endpoint = "/login";
+
+                URL url = new URL("http://localhost:3000" + endpoint);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("POST");
                 con.setDoOutput(true);
-                con.setRequestProperty("Content-Type", "text/plain");
+                con.setRequestProperty("Content-Type", "application/json");
 
-                try (OutputStream os = con.getOutputStream()){
-
-
-
-                }
-
-            } else {
-                URL url = new URL("http://localhost:3000/login");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                con.setRequestProperty("Content-Type", "text/plain");
-
-                String data = "logger\n" + loginL.getText() + "\n" + passwordL.getText() + "\n";
+                JsonObject json = new JsonObject();
+                json.addProperty("login", loginL.getText());
+                json.addProperty("password", passwordL.getText());
 
                 try (OutputStream os = con.getOutputStream()) {
-                    os.write(data.getBytes());
-                    os.flush();
+                    String jsonString = new Gson().toJson(json);
+                    byte[] input = jsonString.getBytes(StandardCharsets.UTF_8);
+                    os.write(input, 0, input.length);
                 }
-                if (con.getResponseCode() == 200){
-                   try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"))){
-                       String response = new String();
-                       String line;
-                       while((line = br.readLine()) != null){
-                            response = line;
-                       }
-                       System.out.println("Server response: " + response);
-                       if(response.equals("succesful")){
 
-                       }
-                   }
-                } else {
-                    System.out.println("Logging error: kod " + con.getResponseCode());
-                }
+                int status = con.getResponseCode();
+                String responseBody = new BufferedReader(new InputStreamReader(con.getInputStream())).lines().collect(Collectors.joining());
+                JsonObject responseJson = JsonParser.parseString(responseBody).getAsJsonObject();
+
+                handleResponse(status, responseJson, endpoint, con.getRequestMethod());
+
+            } else {
+                errorLabelL.setText("Password and/or login is empty.");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Label err = (Label) errorLabelsL.getChildren().get(2);
-            err.setVisible(true);
+            errorLabelL.setText("Unidentified error");
         }
     }
 
@@ -173,37 +162,35 @@ public class TellemController {
         String email = emailR.getText();
 
         if (login.isEmpty() || pass.isEmpty() || passConfirm.isEmpty() || email.isEmpty()){
-            hideErrors();
-            errorLabelsR.getChildren().get(0).setVisible(true);
+            errorLabelR.setText("No field cannot be empty.");
             passwordR.setText("");
             passwordConfirmR.setText("");
         } else if (!pass.equals(passwordConfirmR.getText())) {
-            hideErrors();
-            errorLabelsR.getChildren().get(1).setVisible(true);
+            errorLabelR.setText("Password and confirm password fields are not matching.");
             passwordR.setText("");
             passwordConfirmR.setText("");
         } else if (!email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]{2,}$")){
-            hideErrors();
-            errorLabelsR.getChildren().get(2).setVisible(true);
+            errorLabelR.setText("Wrong e-mail format.");
             passwordR.setText("");
             passwordConfirmR.setText("");
         } else if (!pass.matches("^(?=.*[A-Z]).{8,}$")){
-            hideErrors();
-            errorLabelsR.getChildren().get(3).setVisible(true);
+            errorLabelR.setText("Password must contain at least one big case letter and be at least 8 characters long.");
             passwordR.setText("");
             passwordConfirmR.setText("");
         } else if (!login.matches("^.{8,}$")){
-            hideErrors();
-            errorLabelsR.getChildren().get(4).setVisible(true);
+            errorLabelR.setText("Username has to be at least 8 characters long.");
             passwordR.setText("");
             passwordConfirmR.setText("");
         } else {
-            JsonObject json = new JsonObject();
-            json.addProperty("login", login);
-            json.addProperty("password", pass);
-            json.addProperty("email", email);
             try {
-                URL url = new URL("http://localhost:3000/register");
+                JsonObject json = new JsonObject();
+                json.addProperty("login", login);
+                json.addProperty("password", pass);
+                json.addProperty("email", email);
+
+                String endpoint = "/register";
+
+                URL url = new URL("http://localhost:3000" + endpoint);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("POST");
                 con.setDoOutput(true);
@@ -214,13 +201,17 @@ public class TellemController {
                     byte[] input = jsonString.getBytes(StandardCharsets.UTF_8);
                     os.write(input, 0, input.length);
                 }
-                String status = con.getResponseMessage();
-                System.out.println("Status: " + status);
+
+                int status = con.getResponseCode();
+                String responseBody = new BufferedReader(new InputStreamReader(con.getInputStream())).lines().collect(Collectors.joining());
+                JsonObject responseJson = JsonParser.parseString(responseBody).getAsJsonObject();
+
+                handleResponse(status, responseJson, endpoint, con.getRequestMethod());
+
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Label err = (Label) errorLabelsR.getChildren().get(5);
-                err.setVisible(true);
+                errorLabelR.setText("Unidentified error");
             }
         }
 
@@ -233,11 +224,45 @@ public class TellemController {
     }
 
     private void hideErrors(){
-        for (Node x : errorLabelsL.getChildren()){
-            x.setVisible(false);
-        }
-        for (Node x : errorLabelsR.getChildren()){
-            x.setVisible(false);
+        errorLabelL.setText("");
+        errorLabelR.setText("");
+    }
+
+    public void handleResponse(int status, JsonObject response, String endpoint, String method){
+        if (status >= 200 && status < 300){
+
+            if (endpoint.equals("/register") && method.equals("POST")){
+                System.out.println("Status: " + status + "\n" + response);
+                hideErrors();
+                registerMenu.setVisible(false);
+                communicationMenu.setVisible(true);
+                info.setText("Account created successfully. Please Verify your account using link sent in your e-mail inbox before logging in.");
+            }
+
+            if (endpoint.equals("/login") && method.equals("POST")){
+                System.out.println("Status: " + status + "\n" + response);
+
+                this.accessToken = String.valueOf(response.get("access"));
+                this.refreshToken = String.valueOf(response.get("refresh"));
+
+                System.out.println(accessToken + "\n" + refreshToken);
+
+                hideErrors();
+                loginMenu.setVisible(false);
+                communicationMenu.setVisible(true);
+                info.setText("You logged in successfully");
+            }
+
+        } else if ( status > 300 ){
+
+            hideErrors();
+
+            if (endpoint.equals("/register")){
+                errorLabelR.setText(String.valueOf(response));
+            }
+
+            System.out.println("Status: " + status + "\n" + response);
+
         }
     }
 }
