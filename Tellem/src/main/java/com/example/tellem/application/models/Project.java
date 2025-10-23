@@ -1,15 +1,13 @@
-package com.example.tellem;
-
-import javafx.scene.layout.VBox;
+package com.example.tellem.application.models;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tab {
+public class Project {
     private String name;
     private List<TaskList> lists = new ArrayList<>();
 
-    public Tab(String nameTmp){
+    public Project(String nameTmp){
         this.name = nameTmp;
     }
 

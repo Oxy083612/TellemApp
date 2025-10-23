@@ -1,6 +1,6 @@
 package com.example.tellem;
 
-import com.example.tellem.Tab;
+import com.example.tellem.application.models.Project;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.*;
@@ -12,7 +12,7 @@ public class DataPersistence {
 
     private static final String FILE_NAME = "data.json";
 
-    public static void saveTabsToFile(List<Tab> tabs) {
+    public static void saveTabsToFile(List<Project> tabs) {
         try (Writer writer = new FileWriter(FILE_NAME)) {
             Gson gson = new Gson();
             gson.toJson(tabs, writer);
@@ -22,11 +22,11 @@ public class DataPersistence {
         }
     }
 
-    public static List<Tab> loadTabsFromFile() {
+    public static List<Project> loadTabsFromFile() {
         try (Reader reader = new FileReader(FILE_NAME)) {
             Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<Tab>>() {}.getType();
-            ArrayList<Tab> tabs = gson.fromJson(reader, listType);
+            Type listType = new TypeToken<ArrayList<Project>>() {}.getType();
+            ArrayList<Project> tabs = gson.fromJson(reader, listType);
             System.out.println("Dane wczytane z pliku.");
             return tabs != null ? tabs : new ArrayList<>();
         } catch (FileNotFoundException e) {

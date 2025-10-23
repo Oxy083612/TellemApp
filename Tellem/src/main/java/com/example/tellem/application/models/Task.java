@@ -1,4 +1,4 @@
-package com.example.tellem;
+package com.example.tellem.application.models;
 
 import java.time.LocalDate;
 

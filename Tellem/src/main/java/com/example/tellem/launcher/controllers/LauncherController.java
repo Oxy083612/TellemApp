@@ -1,25 +1,26 @@
-package com.example.tellem;
+package com.example.tellem.launcher.controllers;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.example.tellem.launcher.models.ApiClient;
+import com.example.tellem.launcher.models.AuthService;
+import com.example.tellem.launcher.models.ResponseResult;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 import java.io.*;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
-public class TellemController {
+public class LauncherController {
 
     @FXML
     private VBox blackLine;
@@ -75,71 +76,44 @@ public class TellemController {
     @FXML
     private StackPane rootPane;
 
-    private String refreshToken = "";
-    private String accessToken = "";
-
     @FXML
     private Text info;
 
+    private final AuthService authService = new AuthService(new ApiClient("http://localhost:3000"));
+
     @FXML
     void exit() {
-
+        Stage stage = (Stage) loginMenu.getScene().getWindow();
+        stage.close();
     }
 
     @FXML
     private void onLogInClick(){
+        System.out.println(authService.refreshToken);
+        System.out.println(authService.accessToken);
+        if (!authService.accessToken.isEmpty() && !authService.refreshToken.isEmpty()){
+            ResponseResult result = authService.loginWithTokens();
+            if(result.status){
+                changeViewToApp();
+            } else {
+                mainMenu.setVisible(false);
+                loginMenu.setVisible(true);
+            }
+        }
         mainMenu.setVisible(false);
         loginMenu.setVisible(true);
-    }
-
-    @FXML
-    private void onReturnClick(){
-        mainMenu.setVisible(true);
-        loginMenu.setVisible(false);
-        registerMenu.setVisible(false);
-        communicationMenu.setVisible(false);
-        hideErrors();
-
-        loginL.setText("");
-        passwordL.setText("");
-
-        loginR.setText("");
-        passwordR.setText("");
-        passwordConfirmR.setText("");
-        emailR.setText("");
     }
 
     @FXML
     private void onLoggingInClick(){
         try {
             hideErrors();
-            if (!(passwordL.getText().isEmpty()) && !(loginL.getText().isEmpty())){
-                String endpoint = "/login";
-
-                URL url = new URL("http://localhost:3000" + endpoint);
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                con.setRequestProperty("Content-Type", "application/json");
-
-                JsonObject json = new JsonObject();
-                json.addProperty("login", loginL.getText());
-                json.addProperty("password", passwordL.getText());
-
-                try (OutputStream os = con.getOutputStream()) {
-                    String jsonString = new Gson().toJson(json);
-                    byte[] input = jsonString.getBytes(StandardCharsets.UTF_8);
-                    os.write(input, 0, input.length);
-                }
-
-                int status = con.getResponseCode();
-                String responseBody = new BufferedReader(new InputStreamReader(con.getInputStream())).lines().collect(Collectors.joining());
-                JsonObject responseJson = JsonParser.parseString(responseBody).getAsJsonObject();
-
-                handleResponse(status, responseJson, endpoint, con.getRequestMethod());
-
+            ResponseResult result = authService.login(loginL.getText(), passwordL.getText());
+            if(result.status){
+                changeViewToApp();
+                errorLabelL.setText(result.message);
             } else {
-                errorLabelL.setText("Password and/or login is empty.");
+                errorLabelL.setText(result.message);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -165,7 +139,7 @@ public class TellemController {
             errorLabelR.setText("No field cannot be empty.");
             passwordR.setText("");
             passwordConfirmR.setText("");
-        } else if (!pass.equals(passwordConfirmR.getText())) {
+        } else if (!pass.equals(passConfirm)) {
             errorLabelR.setText("Password and confirm password fields are not matching.");
             passwordR.setText("");
             passwordConfirmR.setText("");
@@ -183,32 +157,10 @@ public class TellemController {
             passwordConfirmR.setText("");
         } else {
             try {
-                JsonObject json = new JsonObject();
-                json.addProperty("login", login);
-                json.addProperty("password", pass);
-                json.addProperty("email", email);
+                hideErrors();
 
-                String endpoint = "/register";
-
-                URL url = new URL("http://localhost:3000" + endpoint);
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("POST");
-                con.setDoOutput(true);
-                con.setRequestProperty("Content-Type", "application/json");
-
-                try (OutputStream os = con.getOutputStream()) {
-                    String jsonString = new Gson().toJson(json);
-                    byte[] input = jsonString.getBytes(StandardCharsets.UTF_8);
-                    os.write(input, 0, input.length);
-                }
-
-                int status = con.getResponseCode();
-                String responseBody = new BufferedReader(new InputStreamReader(con.getInputStream())).lines().collect(Collectors.joining());
-                JsonObject responseJson = JsonParser.parseString(responseBody).getAsJsonObject();
-
-                handleResponse(status, responseJson, endpoint, con.getRequestMethod());
-
-
+                ResponseResult result = authService.register(login, pass, email);
+                errorLabelR.setText(result.message);
             } catch (Exception e) {
                 e.printStackTrace();
                 errorLabelR.setText("Unidentified error");
@@ -219,7 +171,29 @@ public class TellemController {
     }
 
     @FXML
+    private void onReturnClick(){
+        mainMenu.setVisible(true);
+        loginMenu.setVisible(false);
+        registerMenu.setVisible(false);
+        communicationMenu.setVisible(false);
+        hideErrors();
+
+        loginL.setText("");
+        passwordL.setText("");
+
+        loginR.setText("");
+        passwordR.setText("");
+        passwordConfirmR.setText("");
+        emailR.setText("");
+    }
+
+    @FXML
     void onOptionsClick() {
+
+    }
+
+
+    void changeViewToApp(){
 
     }
 
@@ -227,7 +201,7 @@ public class TellemController {
         errorLabelL.setText("");
         errorLabelR.setText("");
     }
-
+/*
     public void handleResponse(int status, JsonObject response, String endpoint, String method){
         if (status >= 200 && status < 300){
 
@@ -248,9 +222,13 @@ public class TellemController {
                 System.out.println(accessToken + "\n" + refreshToken);
 
                 hideErrors();
+
+                // should change view to proper app
                 loginMenu.setVisible(false);
                 communicationMenu.setVisible(true);
                 info.setText("You logged in successfully");
+
+
             }
 
         } else if ( status > 300 ){
@@ -265,4 +243,6 @@ public class TellemController {
 
         }
     }
+
+ */
 }
