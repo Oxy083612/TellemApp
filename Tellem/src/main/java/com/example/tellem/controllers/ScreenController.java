@@ -3,6 +3,7 @@ package com.example.tellem.controllers;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.stage.Screen;
 
 import java.util.HashMap;
 

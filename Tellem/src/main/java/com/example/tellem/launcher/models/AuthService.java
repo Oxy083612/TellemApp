@@ -40,9 +40,7 @@ public class AuthService {
         try {
             String json = "{\"accessToken\":\"" + accessToken + "\"}";
             HttpResponse<String> response = client.post(ApiEndpoint.LOGINTOKEN, json);
-
             if (response.statusCode() == 200){
-                accessToken = itemJsonResponse(response, "accessToken");
                 return new ResponseResult(true ,"You logged in successfully.");
             } else if (response.statusCode() == 300) {
                 // zmień kod na expired access token
@@ -78,7 +76,6 @@ public class AuthService {
         try {
             String json = "{\"refreshToken\":\"" + TokenEncryptor.decrypt(refreshToken) + "\"}";
             HttpResponse<String> response = client.post(ApiEndpoint.REFRESH, json);
-
             if (response.statusCode() == 200){
                 accessToken = itemJsonResponse(response, "accessToken");
                 return new ResponseResult(true, "Access acquired.");

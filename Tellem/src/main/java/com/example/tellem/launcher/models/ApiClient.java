@@ -22,6 +22,7 @@ public class ApiClient {
                 .build();
 
         return client.send(request, HttpResponse.BodyHandlers.ofString());
+
     }
 
     public HttpResponse<String> post(ApiEndpoint endpoint, String jsonBody) throws IOException, InterruptedException {

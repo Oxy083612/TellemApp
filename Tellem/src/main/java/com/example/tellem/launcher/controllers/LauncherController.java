@@ -1,22 +1,14 @@
 package com.example.tellem.launcher.controllers;
 
+import com.example.tellem.controllers.ScreenController;
 import com.example.tellem.launcher.models.ApiClient;
 import com.example.tellem.launcher.models.AuthService;
 import com.example.tellem.launcher.models.ResponseResult;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 import java.io.*;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
-
-import com.google.gson.Gson;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -80,6 +72,7 @@ public class LauncherController {
     private Text info;
 
     private final AuthService authService = new AuthService(new ApiClient("http://localhost:3000"));
+    private ScreenController screenController;
 
     @FXML
     void exit() {
@@ -89,19 +82,27 @@ public class LauncherController {
 
     @FXML
     private void onLogInClick(){
-        System.out.println(authService.refreshToken);
-        System.out.println(authService.accessToken);
         if (!authService.accessToken.isEmpty() && !authService.refreshToken.isEmpty()){
             ResponseResult result = authService.loginWithTokens();
-            if(result.status){
+            if(result.status){                  // sprawdź access token
                 changeViewToApp();
+                System.out.println("AccessToken ważny");
             } else {
-                mainMenu.setVisible(false);
-                loginMenu.setVisible(true);
+                System.out.println("AccessToken nie ważny");
+                ResponseResult refreshResult = authService.refresh(); //odnów access token
+                if(refreshResult.status){              //jeśli jest ważny zaloguj
+                    System.out.println("RefreshToken ważny");
+                    changeViewToApp();
+                } else {
+                    System.out.println("RefreshToken nie ważny");
+                    mainMenu.setVisible(false);
+                    loginMenu.setVisible(true);
+                }
             }
+        } else {
+            mainMenu.setVisible(false);
+            loginMenu.setVisible(true);
         }
-        mainMenu.setVisible(false);
-        loginMenu.setVisible(true);
     }
 
     @FXML
@@ -111,7 +112,6 @@ public class LauncherController {
             ResponseResult result = authService.login(loginL.getText(), passwordL.getText());
             if(result.status){
                 changeViewToApp();
-                errorLabelL.setText(result.message);
             } else {
                 errorLabelL.setText(result.message);
             }
@@ -192,9 +192,12 @@ public class LauncherController {
 
     }
 
+    public void setScreenController(ScreenController screenController){
+        this.screenController = screenController;
+    }
 
     void changeViewToApp(){
-
+        screenController.activate("launcher");
     }
 
     private void hideErrors(){

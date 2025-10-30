@@ -1,6 +1,8 @@
 package com.example.tellem;
 
+import com.example.tellem.application.controllers.MainAppController;
 import com.example.tellem.controllers.ScreenController;
+import com.example.tellem.launcher.controllers.LauncherController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,14 +16,26 @@ public class TellemApp extends Application {
     
     @Override
     public void start(Stage stage) throws IOException {
-        ScreenController screenController = new ScreenController(new Scene(new Pane(), 800, 600));
+        Scene scene = new Scene(new Pane());
+        ScreenController screenController = new ScreenController(scene);
 
-        screenController.addScreen("launcher", FXMLLoader.load(getClass().getResource("launcher-view.fxml")));
-        screenController.addScreen("app", FXMLLoader.load(getClass().getResource("app-view.fxml")));
+        FXMLLoader loaderLauncher = new FXMLLoader(getClass().getResource("launcher-view.fxml"));
+        Pane launcher = loaderLauncher.load();
+        LauncherController launcherController = loaderLauncher.getController();
+        launcherController.setScreenController(screenController);
+
+        FXMLLoader loaderApp = new FXMLLoader(getClass().getResource("app-view.fxml"));
+        Pane app = loaderApp.load();
+        MainAppController appController = loaderApp.getController();
+        appController.setScreenController(screenController);
+
+        screenController.addScreen("launcher", launcher);
+        screenController.addScreen("app", app);
 
         screenController.activate("launcher");
-        stage.setTitle("Tellem Launcher");
+
         stage.setScene(screenController.getScene());
+        stage.setTitle("Tellem");
         stage.show();
     }
     @Override
