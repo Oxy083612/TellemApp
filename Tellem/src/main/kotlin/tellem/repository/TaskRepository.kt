@@ -1,0 +1,3 @@
+package tellem.repository
+
+interface TaskRepository

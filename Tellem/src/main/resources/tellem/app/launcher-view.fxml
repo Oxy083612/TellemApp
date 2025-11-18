@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="rootPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tellem.launcher.ui.LauncherController">
+   <VBox prefHeight="200.0" prefWidth="800.0">
+      <children>
+         <VBox fx:id="blackLine" prefHeight="58.0" prefWidth="800.0" style="-fx-background-color: #212738;" />
+          <HBox prefWidth="800.0" style="-fx-background-color: #D0E0F0;">
+         
+                    <VBox fx:id="leftPanel" alignment="TOP_CENTER" prefHeight="600.0" prefWidth="200" spacing="5" style="-fx-background-color: #57C4E5;">
+               <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="126.0" prefWidth="200.0" text="TellEm" textAlignment="CENTER" textFill="#212738" underline="true">
+                  <font>
+                     <Font name="Microsoft Himalaya" size="72.0" />
+                  </font>
+               </Label>
+               <StackPane fx:id="functionalContainer" prefHeight="246.0" prefWidth="200.0">
+                  <children>
+                     <VBox fx:id="mainMenu" alignment="TOP_CENTER" prefHeight="158.0" prefWidth="200.0">
+                        <children>
+                           <Button mnemonicParsing="false" onAction="#onLogInClick" style="-fx-background-color: #00000000;" text="Log In" textFill="#212738">
+                              <font>
+                                 <Font name="Microsoft Tai Le" size="20.0" />
+                              </font>
+                              <VBox.margin>
+                                 <Insets />
+                              </VBox.margin>
+                           </Button>
+                           <Button mnemonicParsing="false" onAction="#onRegisterClick" style="-fx-background-color: #00000000;" text="Sign In" textFill="#212738">
+                              <font>
+                                 <Font name="Microsoft Tai Le" size="20.0" />
+                              </font>
+                              <VBox.margin>
+                                 <Insets />
+                              </VBox.margin>
+                           </Button>
+                           <Button mnemonicParsing="false" onAction="#onOptionsClick" style="-fx-background-color: #00000000;" text="Options" textFill="#212738">
+                              <font>
+                                 <Font name="Microsoft Tai Le" size="20.0" />
+                              </font>
+                           </Button>
+                           <Button mnemonicParsing="false" onAction="#exit" style="-fx-background-color: #00000000;" text="Exit" textFill="#212738">
+                              <font>
+                                 <Font name="Microsoft Tai Le" size="20.0" />
+                              </font>
+                           </Button>
+                        </children>
+                     </VBox>
+                     <VBox fx:id="loginMenu" alignment="TOP_CENTER" prefHeight="158.0" prefWidth="200.0" visible="false">
+                        <children>
+                           <VBox fx:id="loginField" alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                              <children>
+                                 <Button mnemonicParsing="false" onAction="#onLoggingInClick" style="-fx-background-color: #00000000;" text="Enter" textFill="#212738">
+                                    <font>
+                                       <Font name="Microsoft Tai Le" size="20.0" />
+                                    </font>
+                                 </Button>
+                                 <TextField fx:id="loginL" prefHeight="26.0" prefWidth="188.0" promptText="Login">
+                                    <VBox.margin>
+                                       <Insets left="30.0" right="30.0" top="10.0" />
+                                    </VBox.margin>
+                                 </TextField>
+                                 <PasswordField fx:id="passwordL" prefHeight="26.0" prefWidth="191.0" promptText="Password">
+                                    <VBox.margin>
+                                       <Insets left="30.0" right="30.0" top="10.0" />
+                                    </VBox.margin>
+                                 </PasswordField>
+                                 <Button mnemonicParsing="false" style="-fx-background-color: #00000000;" text="Forgot password?" textFill="#212738">
+                                    <font>
+                                       <Font name="Microsoft Tai Le" size="10.0" />
+                                    </font>
+                                    <VBox.margin>
+                                       <Insets />
+                                    </VBox.margin>
+                                 </Button>
+                                 <Button mnemonicParsing="false" onAction="#onReturnClick" style="-fx-background-color: #00000000;" text="Return">
+                                    <VBox.margin>
+                                       <Insets top="10.0" />
+                                    </VBox.margin>
+                                 </Button>
+                              </children>
+                           </VBox>
+                           <VBox prefHeight="200.0" prefWidth="100.0">
+                              <children>
+                                 <Label fx:id="errorLabelL" alignment="CENTER" prefHeight="109.0" prefWidth="200.0" wrapText="true" />
+                              </children>
+                           </VBox>
+                        </children>
+                        <StackPane.margin>
+                           <Insets />
+                        </StackPane.margin>
+                     </VBox>
+                     <VBox fx:id="registerMenu" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
+                        <children>
+                           <Button mnemonicParsing="false" onAction="#onRegisterInClick" style="-fx-background-color: #00000000;" text="Register" textFill="#212738">
+                              <font>
+                                 <Font name="Microsoft Tai Le" size="20.0" />
+                              </font>
+                           </Button>
+                           <TextField fx:id="loginR" prefHeight="26.0" prefWidth="188.0" promptText="Login" />
+                           <PasswordField fx:id="passwordR" prefHeight="26.0" prefWidth="191.0" promptText="Password" />
+                           <PasswordField fx:id="passwordConfirmR" prefHeight="26.0" prefWidth="191.0" promptText="Confirm Password" />
+                           <TextField fx:id="emailR" prefHeight="26.0" prefWidth="188.0" promptText="E-mail address" />
+                           <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0">
+                              <children>
+                                 <Label fx:id="errorLabelR" alignment="TOP_CENTER" prefHeight="60.0" prefWidth="173.0" wrapText="true" />
+                                 <Button alignment="CENTER" mnemonicParsing="false" onAction="#onReturnClick" style="-fx-background-color: #00000000;" text="Return">
+                                    <font>
+                                       <Font name="System Bold" size="18.0" />
+                                    </font></Button>
+                              </children>
+                           </VBox>
+                        </children>
+                     </VBox>
+                     <VBox fx:id="communicationMenu" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
+                        <children>
+                           <Button mnemonicParsing="false" onAction="#onReturnClick" style="-fx-background-color: #00000000;" text="Continue" textFill="#212738">
+                              <font>
+                                 <Font name="Microsoft Tai Le" size="20.0" />
+                              </font>
+                           </Button>
+                           <Text fx:id="info" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="159.13671875" />
+                        </children>
+                     </VBox>
+                  </children>
+               </StackPane>
+              </VBox>
+         
+                    <VBox fx:id="rightPanel" alignment="BASELINE_CENTER" prefWidth="600" style="-fx-background-color: #EDF2EF;">
+               <children>
+                  <Text fill="#d2645f" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to your new workplace!" textAlignment="CENTER" wrappingWidth="600.0">
+                     <font>
+                        <Font name="Calibri Light" size="62.0" />
+                     </font>
+                  </Text>
+               </children>
+              </VBox>
+      
+          </HBox>
+      </children>
+   </VBox>
+</StackPane>
