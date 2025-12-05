@@ -3,10 +3,12 @@ package tellem.launcher.ui
 import tellem.app.SceneManager
 import tellem.launcher.service.AuthService
 import javafx.fxml.FXML
+import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.PasswordField
 import javafx.scene.control.TextField
 import javafx.scene.layout.VBox
+import javafx.scene.text.Text
 import javafx.stage.Stage
 import tellem.session.SessionManager
 import tellem.util.LauncherController
@@ -23,6 +25,12 @@ class LauncherController : LauncherController {
 
     @FXML
     private lateinit var errorLabelR: Label
+
+    @FXML
+    private lateinit var info: Text
+
+    @FXML
+    private lateinit var resendButton: Button
 
     //@FXML
     //private lateinit var functionalContainer: StackPane
@@ -83,6 +91,7 @@ class LauncherController : LauncherController {
     @Suppress("unused")
     @FXML
     private fun onLogInClick() {
+        resendButton.isVisible = false
         if (sessionManager.isLoggedIn()) {
             val result = authService.loginWithTokens()
             if (result!!.status) {                  // sprawdź access token
@@ -108,10 +117,14 @@ class LauncherController : LauncherController {
         try {
             hideErrors()
             val result = authService.login(loginL.text, passwordL.text)
-            if (result.status) {
-                changeViewToApp()
-            } else {
-                errorLabelL.text = result.message
+            when(result.code) {
+                200 -> changeViewToApp()
+                403 -> {
+                    errorLabelL.text = result.message
+                    println("uaua")
+                    resendButton.isVisible = true
+                }
+                else -> errorLabelL.text = result.message
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -123,6 +136,21 @@ class LauncherController : LauncherController {
     fun onRegisterClick() {
         mainMenu.isVisible = false
         registerMenu.isVisible = true
+    }
+
+    @FXML
+    fun onResendClick() {
+        val result = authService.resend(loginL.text)
+
+        if(result.status){
+            onReturnClick()
+            mainMenu.isVisible = false
+            communicationMenu.isVisible = true
+            info.text = "Verification link sent."
+        } else {
+            errorLabelL.text = "Unknown error due to sending verification link again."
+        }
+
     }
 
     @FXML
@@ -156,7 +184,6 @@ class LauncherController : LauncherController {
         } else {
             try {
                 hideErrors()
-
                 val result = authService.register(login, pass, email)
                 errorLabelR.text = result.message
             } catch (e: Exception) {

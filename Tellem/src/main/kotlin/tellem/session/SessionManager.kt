@@ -7,11 +7,12 @@ import java.time.LocalDateTime
 class SessionManager {
     var refreshToken: Token? = null
     var accessToken: Token? = null
-    //var uID: Int? = null
+    var uID: Int? = null
 
-    fun setSession(refreshToken: Token, accessToken: Token) {
+    fun setSession(refreshToken: Token, accessToken: Token, uID: Int) {
         this.refreshToken = refreshToken
         this.accessToken = accessToken
+        this.uID = uID
     }
 
     fun clearSession() {

@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -38,7 +39,7 @@
       </HBox>
    </top>
    <left>
-      <VBox alignment="TOP_CENTER" prefHeight="372.0" prefWidth="139.0" style="-fx-background-color: #57C4E5;" BorderPane.alignment="CENTER">
+      <VBox fx:id="projectList" alignment="TOP_CENTER" prefHeight="372.0" prefWidth="139.0" style="-fx-background-color: #57C4E5;" BorderPane.alignment="CENTER">
          <children>
             <Button alignment="TOP_CENTER" mnemonicParsing="false" onAction="#onAddProject" text="Add Project">
                <VBox.margin>
@@ -51,7 +52,7 @@
    <center>
       <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <VBox fx:id="createProjectMenu" prefHeight="375.0" prefWidth="169.0">
+            <VBox fx:id="createProjectMenu" prefHeight="375.0" prefWidth="169.0" visible="false">
                <children>
                   <TextField fx:id="createProjectName" prefHeight="25.0" prefWidth="353.0" promptText="Projects name...">
                      <VBox.margin>
@@ -84,7 +85,7 @@
                   </Label>
                </children>
             </VBox>
-            <VBox fx:id="readProjectMenu" prefHeight="200.0" prefWidth="100.0" visible="false">
+            <VBox fx:id="readProjectMenu" prefHeight="200.0" prefWidth="100.0">
                <children>
                   <Label text="Name:">
                      <font>
@@ -98,6 +99,30 @@
                      </font>
                   </Label>
                   <Label fx:id="projectDescription" />
+                  <ScrollPane fx:id="taskListMenu" hbarPolicy="ALWAYS" prefHeight="329.0" prefWidth="461.0" vbarPolicy="NEVER">
+                     <content>
+                        <HBox fx:id="taskListList" prefHeight="220.0" prefWidth="758.0">
+                           <children>
+                              <VBox prefHeight="220.0" prefWidth="153.0">
+                                 <children>
+                                    <Label text="Name:">
+                                       <font>
+                                          <Font name="System Bold" size="19.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="taskListName" />
+                                    <Label text="Description:">
+                                       <font>
+                                          <Font name="System Bold" size="19.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="taskListDescription" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </content>
+                  </ScrollPane>
                </children>
             </VBox>
          </children>

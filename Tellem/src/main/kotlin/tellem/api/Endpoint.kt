@@ -5,6 +5,7 @@ enum class Endpoint(val path: String) {
     LOGIN_TOKEN("/loginToken"),
     REGISTER("/register"),
     REFRESH("/refresh"),
+    RESEND("/resend"),
 
     PROJECT("/project"),
 }

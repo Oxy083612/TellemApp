@@ -40,7 +40,7 @@ class ApplicationMain : Application() {
         appController.setSceneManager(sceneManager)
 
         launcherController.setSessionManager(sessionManager)
-        launcherController.setSessionManager(sessionManager)
+        appController.setSessionManager(sessionManager)
 
         launcherController.setAuthService(authService)
         appController.setAuthService(authService)

@@ -1,6 +1,7 @@
 package tellem.ui.controllers
 
 import javafx.fxml.FXML
+import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.TextField
 import javafx.scene.layout.VBox
@@ -48,18 +49,24 @@ class AppController : AppController {
     private lateinit var createProjectDesc: TextField
 
     @FXML
+    private lateinit var projectList: VBox
+
+    @FXML
     private fun onAddProject() {
         createProjectMenu.isVisible = true
+        readProjectMenu.isVisible = false
     }
 
     @FXML
     private fun onReturnToMenu() {
         createProjectMenu.isVisible = false
+        readProjectMenu.isVisible = false
     }
 
     @FXML
     private fun onCreateProject() {
         try {
+            readProjectMenu.isVisible = false
             hideErrors()
             val name = createProjectName.text
             val desc = createProjectDesc.text
@@ -73,8 +80,10 @@ class AppController : AppController {
                     val projectResult = projectService.createProject(name, desc)
                     println("STATUS: " + projectResult.status + "\nMESSAGE: " + projectResult.message)
                     if (projectResult.status){
-                        readProject();
+                        readProject(projectResult.pID)
+                        addProjectToList(projectResult.name, projectResult.pID)
                     } else {
+                        createProjectError.isVisible = true
                         createProjectError.text = projectResult.message
                     }
                 } catch (e: Exception) {
@@ -90,11 +99,23 @@ class AppController : AppController {
         onReturnToMenu()
     }
 
-    private fun readProject(){
-        println("Coś stworzone")
+    private fun readProject(pID: Int?){
+        hideErrors()
+        createProjectMenu.isVisible = false
+        readProjectMenu.isVisible = true
     }
 
     private fun hideErrors(){
         createProjectError.isVisible = false
+    }
+
+    private fun addProjectToList(name: String?, pID: Int?) {
+        var button = Button()
+        button.text = name
+        println(name)
+        projectList.children.addFirst(button)
+        button.setOnMouseClicked {
+            readProject(pID)
+        }
     }
 }
