@@ -7,6 +7,7 @@ import javafx.scene.control.TextField
 import javafx.scene.layout.VBox
 import tellem.app.SceneManager
 import tellem.launcher.service.AuthService
+import tellem.repository.file.FileProjectRepository
 import tellem.service.ProjectService
 import tellem.session.SessionManager
 import tellem.util.AppController
@@ -103,6 +104,7 @@ class AppController : AppController {
         hideErrors()
         createProjectMenu.isVisible = false
         readProjectMenu.isVisible = true
+        projectService.fetchProject(pID);
     }
 
     private fun hideErrors(){
@@ -117,5 +119,15 @@ class AppController : AppController {
         button.setOnMouseClicked {
             readProject(pID)
         }
+    }
+
+    @FXML
+    private fun onLogoutClick() {
+        changeViewToLauncher()
+        sessionManager.clearSession()
+    }
+
+    private fun changeViewToLauncher() {
+        sceneManager.activate("launcher-view")
     }
 }

@@ -8,7 +8,7 @@ import tellem.session.SessionManager
 class HttpProjectRepository(private val client: HttpClient, private val sessionManager: SessionManager) :
     ProjectRepository {
 
-    override fun fetchProjectById(pID: Int, uID: Int?): Result<String> {
+    override fun fetchProjectById(pID: Int?, uID: Int?): Result<String> {
         return Result.success("OK")
     }
 

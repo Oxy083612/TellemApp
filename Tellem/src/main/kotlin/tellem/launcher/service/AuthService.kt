@@ -160,7 +160,7 @@ class AuthService(private val client: HttpClient, private val sessionManager: Se
             val json = "{\"username\":\"$username\"}"
             val response = client.post(Endpoint.RESEND, json)!!
             println(response.statusCode())
-            return if (response.statusCode() == 200){
+            return if (response.statusCode() == 201){
                 AuthResult(
                     true,
                     response.statusCode(),

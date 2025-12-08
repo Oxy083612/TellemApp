@@ -118,7 +118,11 @@ class LauncherController : LauncherController {
             hideErrors()
             val result = authService.login(loginL.text, passwordL.text)
             when(result.code) {
-                200 -> changeViewToApp()
+                200 -> {
+                    changeViewToApp()
+                    loginL.text = ""
+                    passwordL.text = ""
+                }
                 403 -> {
                     errorLabelL.text = result.message
                     println("uaua")
@@ -141,7 +145,9 @@ class LauncherController : LauncherController {
     @FXML
     fun onResendClick() {
         val result = authService.resend(loginL.text)
-
+        println(result.message)
+        println(result.code)
+        println(result.status)
         if(result.status){
             onReturnClick()
             mainMenu.isVisible = false

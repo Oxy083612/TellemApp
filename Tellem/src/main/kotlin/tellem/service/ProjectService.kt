@@ -9,16 +9,19 @@ import tellem.session.SessionManager
 
 class ProjectService(val client: HttpClient, val sessionManager: SessionManager) {
     val httpProjectRepository = HttpProjectRepository(client, sessionManager)
-    var fileProjectRepository = FileProjectRepository("users", 0)
+    var fileProjectRepository = FileProjectRepository("users")
 
-    fun fetchProject(pID: Int) {
-
+    fun fetchProject(pID: Int?): ProjectResult {
+        return try {
+            ProjectResult(false, "Unexpected error", "", null, "")
+        } catch (e: Exception){
+            e.printStackTrace()
+            ProjectResult(false, "Unexpected error", "", null, "")
+        }
     }
 
     fun createProject(name: String, description: String): ProjectResult {
         return try {
-            fileProjectRepository = FileProjectRepository("users", sessionManager.uID)
-
             val json = "{\"name\":\"$name\", \"description\":\"$description\"}"
             val result = httpProjectRepository.createProject(json)
 

@@ -9,17 +9,15 @@ import tellem.repository.ProjectRepository
 import java.io.File
 import java.io.FileReader
 
-class FileProjectRepository(var path: String, var uID: Int?) : ProjectRepository {
+class FileProjectRepository(private val path: String) : ProjectRepository {
 
-    override fun fetchProjectById(pID: Int, uID: Int?): Result<String> {
+    override fun fetchProjectById(pID: Int?, uID: Int?): Result<String> {
         try {
             val gson = Gson()
             val file = File("$path/$uID.json")
-            val reader = JsonReader(FileReader("$path/$uID.json"))
-
-            val data: Project = gson.fromJson(reader, Project::class.java)
-            println("DATA: $data")
-
+            if (file.exists()){
+                val reader = JsonReader(FileReader(file.path))
+            }
 
             return Result.success("OK")
         } catch (e: Exception) {
@@ -35,12 +33,13 @@ class FileProjectRepository(var path: String, var uID: Int?) : ProjectRepository
             val jsonObj = JsonParser.parseString(projectJson).asJsonObject
             val projectJsonObj = jsonObj.getAsJsonObject("project")
 
+
+            val uID = projectJsonObj.get("user_id").asInt
             val name = projectJsonObj.get("name").asString
             val description = projectJsonObj.get("description").asString
             val pID = projectJsonObj.get("id").asInt
 
             val project = Project(name, description, pID)
-
             val file = File("$path/$uID.json")
 
             val gson = Gson()
