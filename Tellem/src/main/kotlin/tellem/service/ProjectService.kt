@@ -13,36 +13,23 @@ class ProjectService(val client: HttpClient, val sessionManager: SessionManager)
 
     fun fetchProject(pID: Int?): ProjectResult {
         return try {
-            ProjectResult(false, "Unexpected error", "", null, "")
-        } catch (e: Exception){
-            e.printStackTrace()
-            ProjectResult(false, "Unexpected error", "", null, "")
-        }
-    }
-
-    fun createProject(name: String, description: String): ProjectResult {
-        return try {
-            val json = "{\"name\":\"$name\", \"description\":\"$description\"}"
-            val result = httpProjectRepository.createProject(json)
-
-
+            val result = httpProjectRepository.fetchProjectById(pID, sessionManager.uID)
+            println(result.isSuccess)
             return result.fold(
                 onSuccess = { body ->
                     val jsonObj = JsonParser.parseString(body).asJsonObject
                     val projectJsonObj = jsonObj.getAsJsonObject("project")
-
-                    val projectId = projectJsonObj.get("id")?.asInt
+                    val projectId = projectJsonObj.get("id").asInt
                     val name = projectJsonObj.get("name")?.asString
-                    fileProjectRepository.createProject(body)
-
-                    println("ID: $projectId + $name")
+                    val description = projectJsonObj.get("description").asString
 
                     ProjectResult(
                         status = true,
                         message = "Project created",
                         projectBody = body,
                         pID = projectId,
-                        name = name
+                        name = name,
+                        description = description,
                     )
                 },
                 onFailure = {
@@ -51,14 +38,55 @@ class ProjectService(val client: HttpClient, val sessionManager: SessionManager)
                         message = "Failed to create project: ${it.message}",
                         projectBody = "",
                         pID = null,
-                        name = ""
+                        name = "",
+                        description = ""
+                    )
+                })
+        } catch (e: Exception){
+            e.printStackTrace()
+            ProjectResult(false, "Unexpected error", "", null, "", "")
+        }
+    }
+
+    fun createProject(name: String, description: String): ProjectResult {
+        return try {
+            val json = "{\"name\":\"$name\", \"description\":\"$description\"}"
+            val result = httpProjectRepository.createProject(json)
+
+            return result.fold(
+                onSuccess = { body ->
+                    val jsonObj = JsonParser.parseString(body).asJsonObject
+                    val projectJsonObj = jsonObj.getAsJsonObject("project")
+
+                    val projectId = projectJsonObj.get("id")?.asInt
+                    val name = projectJsonObj.get("name")?.asString
+                    val description = projectJsonObj.get("description")?.asString
+                    fileProjectRepository.createProject(body)
+
+                    ProjectResult(
+                        status = true,
+                        message = "Project created",
+                        projectBody = body,
+                        pID = projectId,
+                        name = name,
+                        description = description
+                    )
+                },
+                onFailure = {
+                    ProjectResult(
+                        status = false,
+                        message = "Failed to create project: ${it.message}",
+                        projectBody = "",
+                        pID = null,
+                        name = "",
+                        description = ""
                     )
                 }
             )
 
         } catch (e: Exception){
             e.printStackTrace()
-            ProjectResult(false, "Unexpected error", "", null, "")
+            ProjectResult(false, "Unexpected error", "", null, "", "")
         }
     }
 }

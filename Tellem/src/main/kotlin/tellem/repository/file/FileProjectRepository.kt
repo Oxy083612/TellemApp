@@ -13,11 +13,23 @@ class FileProjectRepository(private val path: String) : ProjectRepository {
 
     override fun fetchProjectById(pID: Int?, uID: Int?): Result<String> {
         try {
-            val gson = Gson()
             val file = File("$path/$uID.json")
-            if (file.exists()){
-                val reader = JsonReader(FileReader(file.path))
+            if (!file.exists()){
+                return Result.failure(Exception("File couldn't be found"));
             }
+
+            val jsonContent = file.readText();
+
+            val rootObj = JsonParser.parseString(jsonContent).asJsonObject
+
+            val projectsArray = rootObj.getAsJsonArray("projects");
+
+            val found = projectsArray.firstOrNull() { element ->
+                val obj = element.asJsonObject
+                obj.get("id").asInt == pID
+            }
+
+            println(found?.toString())
 
             return Result.success("OK")
         } catch (e: Exception) {

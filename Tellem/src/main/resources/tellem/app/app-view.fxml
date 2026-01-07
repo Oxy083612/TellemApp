@@ -90,7 +90,7 @@
                   </Label>
                </children>
             </VBox>
-            <VBox fx:id="readProjectMenu" prefHeight="200.0" prefWidth="100.0">
+            <VBox fx:id="readProjectMenu" prefHeight="200.0" prefWidth="100.0" visible="false">
                <children>
                   <Label text="Name:">
                      <font>
@@ -106,24 +106,13 @@
                   <Label fx:id="projectDescription" />
                   <ScrollPane fx:id="taskListMenu" hbarPolicy="ALWAYS" prefHeight="329.0" prefWidth="461.0" vbarPolicy="NEVER">
                      <content>
-                        <HBox fx:id="taskListList" prefHeight="220.0" prefWidth="758.0">
+                        <HBox fx:id="taskListList" prefHeight="220.0" prefWidth="460.0">
                            <children>
-                              <VBox prefHeight="220.0" prefWidth="153.0">
-                                 <children>
-                                    <Label text="Name:">
-                                       <font>
-                                          <Font name="System Bold" size="19.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="taskListName" />
-                                    <Label text="Description:">
-                                       <font>
-                                          <Font name="System Bold" size="19.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="taskListDescription" />
-                                 </children>
-                              </VBox>
+                              <Button fx:id="createTaskListButton" mnemonicParsing="false" onAction="#onCreateTaskListClick" text="Create TaskList">
+                                 <HBox.margin>
+                                    <Insets left="25.0" right="25.0" top="100.0" />
+                                 </HBox.margin>
+                              </Button>
                            </children>
                         </HBox>
                      </content>

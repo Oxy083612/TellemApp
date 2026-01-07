@@ -6,6 +6,9 @@ enum class Endpoint(val path: String) {
     REGISTER("/register"),
     REFRESH("/refresh"),
     RESEND("/resend"),
+    PROJECT("/project");
 
-    PROJECT("/project"),
+    fun addQuery(key: String, value: String): String {
+        return this.path + "?$key=$value"
+    }
 }

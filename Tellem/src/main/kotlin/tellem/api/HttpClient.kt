@@ -10,13 +10,16 @@ class HttpClient(private val baseUrl: String?) {
     private val client: HttpClient = HttpClient.newHttpClient()
 
     @Throws(IOException::class, InterruptedException::class)
-    fun get(endpoint: Endpoint): HttpResponse<String?>? {
+    fun get(endpoint: String, accessToken: String? = null): HttpResponse<String?>? {
         val request = HttpRequest.newBuilder()
-            .uri(URI.create(baseUrl + endpoint.path))
+            .uri(URI.create(baseUrl + endpoint))
             .GET()
-            .build()
 
-        return client.send(request, HttpResponse.BodyHandlers.ofString())
+        if (accessToken != null) {
+            request.header("Authorization", "Bearer $accessToken")
+        }
+
+        return client.send(request.build(), HttpResponse.BodyHandlers.ofString())
     }
 
     @Throws(IOException::class, InterruptedException::class)
